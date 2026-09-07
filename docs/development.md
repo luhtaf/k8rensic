@@ -33,6 +33,21 @@ onto the default branch. And a commit that touches more than one component
 cannot be split by subtree — keep changes to one component per commit, or the
 push carries changes the other repository has no place for.
 
+### A caveat on the s3nitor subtree
+
+The `git-subtree-split` recorded when `components/s3nitor` was imported names a
+commit that no longer exists upstream — that branch was rewritten afterwards.
+The imported files are byte-identical, so nothing here is wrong, but the first
+`git subtree pull` for s3nitor may not find its anchor and will need a re-add:
+
+```bash
+git rm -r components/s3nitor && git commit -m "chore: re-anchor s3nitor subtree"
+git subtree add --prefix=components/s3nitor \
+  https://github.com/luhtaf/s3nitor.git feat/staged-pipeline-foundations
+```
+
+corator and surisink are unaffected.
+
 ## Known state of each component
 
 Recorded because it is the kind of thing that is obvious once and forgotten
