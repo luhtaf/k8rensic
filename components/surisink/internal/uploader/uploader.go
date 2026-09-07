@@ -9,6 +9,7 @@ import (
 	"github.com/luhtaf/surisink/internal/meta"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/minio/minio-go/v7/pkg/tags"
 )
 
 // Uploader uploads files to S3-compatible storage.
@@ -68,24 +69,35 @@ func (u *Uploader) UploadFile(ctx context.Context, fm meta.FileMeta) (string, er
 		return "", err
 	}
 
-	tags := map[string]string{
+	kv := map[string]string{
 		"sha256": fm.SHA256,
 		"mime":   fm.MIME,
 		"ts":     fm.TS.UTC().Format(time.RFC3339),
 	}
 	if fm.FlowID != "" {
-		tags["flow_id"] = fm.FlowID
+		kv["flow_id"] = fm.FlowID
 	}
 	if fm.SrcIP != "" {
-		tags["src"] = fm.SrcIP
+		kv["src"] = fm.SrcIP
 	}
 	if fm.DstIP != "" {
-		tags["dst"] = fm.DstIP
+		kv["dst"] = fm.DstIP
 	}
 	if fm.Sensor != "" {
-		tags["sensor"] = fm.Sensor
+		kv["sensor"] = fm.Sensor
 	}
-	if err := u.cli.PutObjectTagging(ctx, u.bucket, key, tags, minio.PutObjectTaggingOptions{}); err != nil {
+	// minio-go v7 takes *tags.Tags here, not a plain map. The map form compiles
+	// against no released version this module pins, so this call never built —
+	// see docs/development.md.
+	//
+	// The second argument to NewTags is isObject: object tags allow 10 pairs,
+	// bucket tags 50, and passing false silently accepts a set the API will
+	// later reject.
+	t, err := tags.NewTags(kv, true)
+	if err != nil {
+		return "", fmt.Errorf("building object tags: %w", err)
+	}
+	if err := u.cli.PutObjectTagging(ctx, u.bucket, key, t, minio.PutObjectTaggingOptions{}); err != nil {
 		return "", err
 	}
 	return key, nil

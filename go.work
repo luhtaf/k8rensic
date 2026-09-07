@@ -1,0 +1,19 @@
+// One workspace, three modules.
+//
+// The module paths stay github.com/luhtaf/{corator,surisink,s3nitor} rather
+// than being rewritten under k8rensic. Rewriting them would break every
+// existing import, every published release, and the upstream repositories these
+// were merged from — and buys nothing: a workspace already lets the three build
+// and test as one tree.
+//
+// Each keeps its own go.mod because they keep their own dependencies. corator
+// pulls in Coraza, s3nitor is pinned to cgo by the SQLite driver, and surisink
+// needs neither. Folding them into one module would give every component the
+// worst constraint of all three.
+go 1.25.0
+
+use (
+	./components/corator
+	./components/s3nitor
+	./components/surisink
+)
