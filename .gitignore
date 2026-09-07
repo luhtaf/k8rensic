@@ -1,0 +1,19 @@
+# Build output
+build/
+dist/
+bin/
+
+# Local configuration — every component reads env vars; .env holds real
+# credentials for a real cluster and must never be committed.
+.env
+*.local.yaml
+
+# Go
+vendor/
+*.test
+*.out
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
