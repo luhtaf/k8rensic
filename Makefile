@@ -42,10 +42,7 @@ tidy:
 # Each component is a git subtree, so upstream changes come in with history
 # rather than as a re-copy. Pushing back the other way is the same command with
 # `push` — see docs/development.md before using it.
-# s3nitor tracks its feature branch, not main: main still holds only the initial
-# commit, and everything since lives on the branch. Point this at main once that
-# branch is merged.
 sync:
 	git subtree pull --prefix=components/corator  https://github.com/luhtaf/corator.git  main   --squash
 	git subtree pull --prefix=components/surisink https://github.com/luhtaf/surisink.git master --squash
-	git subtree pull --prefix=components/s3nitor  https://github.com/luhtaf/s3nitor.git  main --squash
+	git subtree pull --prefix=components/s3nitor  https://github.com/luhtaf/s3nitor.git  main   --squash
