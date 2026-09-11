@@ -48,4 +48,4 @@ tidy:
 sync:
 	git subtree pull --prefix=components/corator  https://github.com/luhtaf/corator.git  main   --squash
 	git subtree pull --prefix=components/surisink https://github.com/luhtaf/surisink.git master --squash
-	git subtree pull --prefix=components/s3nitor  https://github.com/luhtaf/s3nitor.git  feat/staged-pipeline-foundations --squash
+	git subtree pull --prefix=components/s3nitor  https://github.com/luhtaf/s3nitor.git  main --squash
